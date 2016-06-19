@@ -9,6 +9,14 @@ crate-type = ["staticlib"]
 [dependencies]
 rlibc = "1.0.0"
 spin = "0.3.4"
+cpuio = "*"
+pic8259_simple = "*"
+x86 = "*"
+bit_field = "*"
+
+[dependencies.lazy_static]
+version = "0.2.1"
+features = ["spin_no_std"]
 
 [profile.dev]
 panic = "abort"
