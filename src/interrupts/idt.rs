@@ -77,7 +77,7 @@ impl Entry {
 }
 
 
-pub type HandlerFunc = extern "C" fn() -> !;
+pub type HandlerFunc = unsafe extern "C" fn();
 
 impl Idt {
     pub fn new() -> Idt {
