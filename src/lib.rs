@@ -2,12 +2,9 @@
 #![no_std]
 #![feature(const_fn)]
 #![feature(unique)]
-<<<<<<< HEAD
 #![feature(ptr_internals)]
-=======
 #![feature(asm)]
->>>>>>> Enable keyboard irq and test handler
-
+#![feature(naked_functions)]
 extern crate rlibc;
 extern crate spin;
 extern crate pic8259_simple;
