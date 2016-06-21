@@ -3,7 +3,7 @@
 #![feature(const_fn)]
 #![feature(unique)]
 #![feature(asm)]
-
+#![feature(naked_functions)]
 extern crate rlibc;
 extern crate spin;
 extern crate pic8259_simple;
