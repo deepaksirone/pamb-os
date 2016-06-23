@@ -1,7 +1,7 @@
 use x86::segmentation::{self, SegmentSelector};
 use bit_field::BitField;
 
-pub struct Idt([Entry; 64]);
+pub struct Idt([Entry; 256]);
 
 #[derive(Debug, Clone, Copy)]
 #[repr(C, packed)]
@@ -81,7 +81,7 @@ pub type HandlerFunc = unsafe extern "C" fn();
 
 impl Idt {
     pub fn new() -> Idt {
-        Idt([Entry::missing(); 64])
+        Idt([Entry::missing(); 256])
     }
     pub fn set_handler(&mut self, entry: u8, handler: HandlerFunc) -> &mut EntryOptions
     {
