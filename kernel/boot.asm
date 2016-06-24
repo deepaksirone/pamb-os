@@ -12,8 +12,8 @@ p2_table:
 	resb 4096
 
 stack_bottom:
-	resb 4096			; reserve space for stack
-stack_top: 
+	resb 12288				; reserve space for stack
+stack_top:
 
 section .text
 bits 32
