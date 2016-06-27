@@ -19,6 +19,7 @@ section .text
 bits 32
 start:
 	mov esp, stack_top 		; setup stack pointer, stack is full descending
+	mov edi, ebx			; Move multiboot info pointer to edi
 
 	mov eax, p3_table
 	or eax, 0b11	  		; present and writable 
