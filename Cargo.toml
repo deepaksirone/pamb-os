@@ -18,5 +18,8 @@ bit_field = "*"
 version = "0.2.1"
 features = ["spin_no_std"]
 
+[dependencies.multiboot2]
+git = "https://github.com/phil-opp/multiboot2-elf64"
+
 [profile.dev]
 panic = "abort"
