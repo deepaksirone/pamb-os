@@ -17,6 +17,7 @@ extern crate bit_field;
 #[macro_use]
 mod vga_buffer;
 mod interrupts;
+pub mod memory;
 
 #[no_mangle]
 pub extern fn rust_main(multiboot_information_address: usize)
@@ -63,11 +64,16 @@ pub extern fn rust_main(multiboot_information_address: usize)
         let multiboot_start = multiboot_information_address;
         let multiboot_end = multiboot_start + (boot_info.total_size as usize); 
 
-        println!("kernel start: {} kernel end: {}", kernel_start, kernel_end);
-        println!("multiboot_start: {} multiboot_end: {}", multiboot_start, multiboot_end);
+        println!("kernel start: {:x} kernel end: {:x}", kernel_start, kernel_end);
+        println!("multiboot_start: {:x} multiboot_end: {:x}", multiboot_start, multiboot_end);
+    
+        println!("Hello World!");
+        use memory::*;
+        let mut frame_allocator = area_frame_allocator::new (
+            kernel_start as usize, kernel_end as usize, 
+            multiboot_start, multiboot_end, memory_map_tag.memory_areas());
+        println!("{:?}", frame_allocator.allocate_frame());
     }
-    println!("Hello World!");
-  
     loop { }
 }
 
