@@ -4,6 +4,7 @@
 #![feature(unique)]
 #![feature(asm)]
 #![feature(naked_functions)]
+
 extern crate rlibc;
 extern crate spin;
 extern crate pic8259_simple;
@@ -13,6 +14,10 @@ extern crate lazy_static;
 extern crate x86;
 extern crate multiboot2;
 extern crate bit_field;
+extern crate multiboot_pamb;
+
+#[macro_use]
+extern crate bitflags;
 
 #[macro_use]
 mod vga_buffer;
@@ -41,7 +46,12 @@ pub extern fn rust_main(multiboot_information_address: usize)
         time_w.write(0); 
         asm!("sti");
         println!("DATA mask: {}", pic_master_data.read());
-
+/*        let fix = unsafe { multiboot_pamb::load(multiboot_information_address) };
+        let mem_areas = fix.unwrap().memory_map_tag().unwrap().areas();
+        for area in mem_areas {
+            println!("Base addr: 0x{:x} Length: 0x{:x} Type: {}", area.base_addr, area.length, area.type_);
+        }*/
+        //println!("Size : {}", fix.unwrap().total_size);
         let boot_info = unsafe{ multiboot2::load(multiboot_information_address) };
         let memory_map_tag = boot_info.memory_map_tag().expect("Memory map tag required");
 
@@ -72,8 +82,11 @@ pub extern fn rust_main(multiboot_information_address: usize)
         let mut frame_allocator = area_frame_allocator::new (
             kernel_start as usize, kernel_end as usize, 
             multiboot_start, multiboot_end, memory_map_tag.memory_areas());
-        println!("{:?}", frame_allocator.allocate_frame());
+
+        memory::paging::test_paging(&mut frame_allocator);
     }
+
+    
     loop { }
 }
 
@@ -85,5 +98,6 @@ extern fn panic_fmt(fmt: core::fmt::Arguments, file: &str, line: u32) -> !
     println!("   {}", fmt);
     loop {}
 }
+
 
 

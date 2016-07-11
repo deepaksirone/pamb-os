@@ -47,6 +47,10 @@ start:
 	mov eax, 1 << 5
 	mov cr4, eax
 
+	mov eax, p4_table		; Recursively map 512th of P4 table to itself
+	or eax, 0b11
+	mov [p4_table + 511 * 8], eax
+
 	mov ecx, 0xc0000080		; set the long mode bit in the EFER MSR (model specific register)
 	rdmsr
 	or eax, 1 << 8

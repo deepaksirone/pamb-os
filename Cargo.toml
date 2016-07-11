@@ -13,6 +13,8 @@ cpuio = "*"
 pic8259_simple = "*"
 x86 = "*"
 bit_field = "*"
+multiboot_pamb = { path = "../rust/multiboot_pamb" } 
+bitflags = "0.7.0"
 
 [dependencies.lazy_static]
 version = "0.2.1"
