@@ -11,7 +11,6 @@ rlibc = "1.0.0"
 spin = "0.3.4"
 cpuio = "*"
 pic8259_simple = "*"
-x86 = "*"
 bit_field = "*"
 multiboot_pamb = { path = "../rust/multiboot_pamb" } 
 bitflags = "0.7.0"
@@ -22,6 +21,10 @@ features = ["spin_no_std"]
 
 [dependencies.multiboot2]
 git = "https://github.com/phil-opp/multiboot2-elf64"
+
+[dependencies.x86]
+version = "0.6.0"
+default-features = false
 
 [profile.dev]
 panic = "abort"

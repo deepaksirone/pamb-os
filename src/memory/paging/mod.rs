@@ -141,10 +141,13 @@ pub unsafe fn new() -> ActivePageTable {
                 if let Some(p2) = p3.next_table(page.p3_index()) {
                      let p2_entry = &p2[page.p2_index()];
                     if let Some(start_frame) = p2_entry.pointed_frame() {
-                         assert!(start_frame.number % ENTRY_COUNT == 0);
-                        return Some (Frame {
-                             number: start_frame.number + page.p1_index()
-                        });
+                       
+                        if p2_entry.flags().contains(HUGE_PAGE) {
+                             assert!(start_frame.number % ENTRY_COUNT == 0);
+                             return Some (Frame {
+                                number: start_frame.number + page.p1_index()
+                            });
+                        }
                     }
                 }
              None
@@ -182,7 +185,6 @@ pub unsafe fn new() -> ActivePageTable {
             where A: FrameAllocator
     {
         assert!(self.translate(page.start_address()).is_some());
-
         let p1 = self.p4_mut()
                     .next_table_mut(page.p4_index())
                     .and_then(|p3| p3.next_table_mut(page.p3_index()))
@@ -190,17 +192,19 @@ pub unsafe fn new() -> ActivePageTable {
                     .expect("Mapping code does not support huge pages");
         let frame = p1[page.p1_index()].pointed_frame().unwrap();
         p1[page.p1_index()].set_unused();
-
-        allocator.deallocate_frame(frame)
+        unsafe {
+            ::x86::tlb::flush(page.start_address());
+        }
+//        allocator.deallocate_frame(frame)
     }
 
 }
 
-
+#[no_mangle]
 pub fn test_paging<A>(allocator: &mut A)
         where A: FrameAllocator
 {
-    let page_table = unsafe { ActivePageTable::new() };
+    let mut page_table = unsafe { ActivePageTable::new() };
     // address 0 is mapped
     println!("Some = {:?}", page_table.translate(0));
     //  // second P1 entry
@@ -214,4 +218,19 @@ pub fn test_paging<A>(allocator: &mut A)
     //  // last mapped byte
     println!("Some = {:?}", page_table.translate(512 * 512 * 4096 - 1));
     
+    let addr = 42 * 512 * 512 * 4096;
+    let page = Page::containing_address(addr);
+    let frame = allocator.allocate_frame().expect("no more frames");
+    println!("None = {:?}, map to {:?}", page_table.translate(addr), frame);
+    page_table.map_to(page, frame, EntryFlags::empty(), allocator);
+    println!("Some = {:?}", page_table.translate(addr));
+    println!("Next free frame: {:?}", allocator.allocate_frame());
+    println!("{:#x}", unsafe { *(Page::containing_address(addr).start_address() as *const u64) });
+
+    page_table.unmap(Page::containing_address(addr), allocator);
+
+   // println!("{:#x}", unsafe { *(Page::containing_address(addr).start_address() as *const u64) });
+
+
+
 }

@@ -85,7 +85,7 @@ impl Idt {
     }
     pub fn set_handler(&mut self, entry: u8, handler: HandlerFunc) -> &mut EntryOptions
     {
-        self.0[entry as usize] = Entry::new(segmentation::cs(), handler);
+        self.0[entry as usize] = Entry::new(SegmentSelector::from_bits(8).unwrap(), handler);
         &mut self.0[entry as usize].options
     }
     pub fn load(&'static self) {
