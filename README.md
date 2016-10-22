@@ -3,6 +3,7 @@
 An operating system written in Rust for educational purposes.
 ## Aim
 Run x86/x86_64 elf executables
+Keyboard for I and screen for O
 
 ## To Do
 
