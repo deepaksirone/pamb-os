@@ -8,6 +8,8 @@
     "pre-link-args": [ "-m64" ],
     "cpu": "x86-64",
     "features": "-mmx,-sse,-sse2,-sse3,-ssse3,-sse4.1,-sse4.2,-3dnow,-3dnowa,-avx,-avx2",
+    "target-c-int-width": "32",
+    "linker-flavor": "ld",
     "disable-redzone": true,
     "eliminate-frame-pointer": true,
     "linker-is-gnu": true,
